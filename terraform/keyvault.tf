@@ -7,7 +7,7 @@ resource "azurerm_key_vault" "keyvault" {
   purge_protection_enabled    = false
   soft_delete_retention_days  = 7
   enabled_for_disk_encryption = true
-  tags                = var.tags
+  tags                        = var.tags
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
@@ -19,7 +19,7 @@ resource "azurerm_key_vault" "keyvault" {
   network_acls {
     bypass                     = "AzureServices"
     default_action             = "Deny"
-    virtual_network_subnet_ids = []
+    virtual_network_subnet_ids = [azurerm_subnet.subnet.id]
   }
 
   lifecycle {
