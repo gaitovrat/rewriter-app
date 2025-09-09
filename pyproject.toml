@@ -1,0 +1,11 @@
+[project]
+name = "rewriter"
+version = "0.1.0"
+description = "This app rewrites text using OpenAI API."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "openai>=1.107.0",
+    "pydantic>=2.11.7",
+]

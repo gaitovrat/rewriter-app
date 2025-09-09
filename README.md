@@ -17,7 +17,7 @@ This app rewrites text using OpenAI API.
    terraform apply -var-file=variables/project.tfvars
    ```
 
-### .envrc.local description
+### .envrc description
 |Environment Variable|Description|
 |---|---|
 |`TF_VAR_resource_group_name`|Name of the resource group where resources will be created|
@@ -28,3 +28,19 @@ This app rewrites text using OpenAI API.
 |---|---|
 |`resource_group_name`|Name of the resource group where the Terraform state storage account is located|
 |`storage_account_name`|Name of the storage account where the Terraform state file will be stored|
+
+## Application setup
+1. Install [direnv](https://direnv.net/) and [uv](https://docs.astral.sh/uv/)
+1. Copy `app/.envrc.tmpl` to `app/.envrc` and
+2. Update the variables with your values.
+3. Run `direnv allow` in the `app` directory.
+4. Run `uv sync --locked` to install the dependencies.
+5. Start the application with `uv run fastapi main.py`.
+
+### .envrc description
+|Environment Variable|Description|
+|---|---|
+|`AZURE_API_ENDPOINT`|Your Azure OpenAI endpoint (e.g., `https://<your-resource-name>.openai.azure.com/`)|
+|`AZURE_API_KEY`|Your Azure OpenAI API key|
+|`AZURE_API_VERSION`|API version to use (e.g., `2024-02-15-preview`)|
+|`AZURE_DEPLOYMENT`|The name of the deployment you want to use (e.g., `gpt-4o-mini`)|
