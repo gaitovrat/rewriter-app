@@ -34,3 +34,38 @@ resource "azurerm_service_plan" "asp" {
     ]
   }
 }
+
+resource "azurerm_linux_web_app" "app" {
+  name                = "${var.project_name}-app"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  service_plan_id     = azurerm_service_plan.asp.id
+  tags                = var.tags
+
+  site_config {
+    always_on        = true
+    application_stack {
+      docker_image_name = "ghcr.io/gaitovrat/rewriter-app:0.1.0"
+    }
+    cors {
+      allowed_origins = ["*"]
+    }
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  app_settings = {
+    AZURE_API_ENDPOINT = "https://germanywestcentral.api.cognitive.microsoft.com/"
+    AZURE_API_KEY = azurerm_key_vault_secret.openai_key.value
+    AZURE_API_VERSION = "2025-01-01-preview"
+    AZURE_DEPLOYMENT = "rewriter-gpt-4o-mini-2024-07-18"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags["CreatedDate"]
+    ]
+  }
+}
