@@ -18,6 +18,16 @@ resource "azurerm_subnet" "subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
   service_endpoints    = ["Microsoft.KeyVault"]
+
+  delegation {
+    name = "webappdelegation"
+    service_delegation {
+      name = "Microsoft.Web/serverFarms"
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/action"
+      ]
+    }
+  }
 }
 
 resource "azurerm_service_plan" "asp" {
@@ -58,10 +68,11 @@ resource "azurerm_linux_web_app" "app" {
 
   app_settings = {
     AZURE_API_ENDPOINT = "https://germanywestcentral.api.cognitive.microsoft.com/"
-    AZURE_API_KEY = azurerm_key_vault_secret.openai_key.value
+    AZURE_API_KEY = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.openai_key.id})"
     AZURE_API_VERSION = "2025-01-01-preview"
     AZURE_DEPLOYMENT = "rewriter-gpt-4o-mini-2024-07-18"
   }
+  virtual_network_subnet_id = azurerm_subnet.subnet.id
 
   lifecycle {
     ignore_changes = [

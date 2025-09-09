@@ -35,3 +35,11 @@ resource "azurerm_key_vault_secret" "openai_key" {
   value        = azurerm_cognitive_account.openai.primary_access_key
   key_vault_id = azurerm_key_vault.keyvault.id
 }
+
+resource "azurerm_key_vault_access_policy" "app_access_policy" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_linux_web_app.app.identity[0].principal_id
+
+  secret_permissions = ["Get"]
+}
